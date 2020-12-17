@@ -3,9 +3,11 @@ const { query } = require('express')
 const { insertDocument, getOneDocument, updateOneDocument } = require('../Model/index')
 //const { use } = require('../Routes/LoginRoutes')
 const bcrypt = require('bcrypt')
-
-const User = require('../Schema/UserRegister')
+const jwt =require('jsonwebtoken') 
 const usermodel = 'userRegister'
+const tokenmodel='token'
+require('dotenv').config()
+
 
 module.exports.createUser = async (req, res) => {
    
@@ -50,7 +52,14 @@ module.exports.UserLogin = async (req, res) => {
         if (result) {
             var match= await bcrypt.compare(Password,result.Password)
             if (match) {
-                res.send("Login Success")   
+                var payload={email:result.Email}
+               var token=  jwt.sign(payload,process.env.secret_key,{ expiresIn: "1h"}) 
+               var response={
+                   Message:"login success",
+                   Token:token
+               }
+               res.send(response) 
+               console.log(token)
             }
             else {
                 res.send("Please Enter Valid PassWord")
@@ -97,4 +106,4 @@ module.exports.editUser = async (req, res) => {
         res.send(e)
     }
 }
-console.log("hello git ")
+

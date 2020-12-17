@@ -1,7 +1,8 @@
 var mongoose=require('mongoose')
 
 var db={
-    'userRegister':require('../Schema/UserRegister')
+    'userRegister':require('../Schema/UserRegister'),
+    'token':require('../Schema/token')
 }
 
 module.exports.insertDocument=async (model,doc)=>{
