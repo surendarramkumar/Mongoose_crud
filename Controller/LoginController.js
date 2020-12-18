@@ -6,6 +6,9 @@ const bcrypt = require('bcrypt')
 const jwt =require('jsonwebtoken') 
 const usermodel = 'userRegister'
 const tokenmodel='token'
+var path = require('path')
+const fs=require('fs')
+const fastcsv = require("fast-csv");
 require('dotenv').config()
 
 
@@ -106,4 +109,50 @@ module.exports.editUser = async (req, res) => {
         res.send(e)
     }
 }
+module.exports.uploadFile=(req, res) => {
+    const file = req.file
+    var data=[]
+    if (!file) {
+      return res.send("please upload a image");
+    }
+    else{
+        try {
 
+            let stream = fs.createReadStream(file.path); 
+            let csvData = [];
+            let csvStream = fastcsv.parse()
+                .on("data", (data) => {
+                    csvData.push(
+                        {
+                            first_name: data[0],
+                            last_name: data[1],
+                            company_name: data[2],
+                            address: data[3],
+                            city: data[4],
+                            county: data[5],
+                            state: data[6],
+                            zip: data[7],
+                            phone1: data[8],
+                            phone2: data[9],
+                            email: data[10],
+                            web: data[11],
+                        });
+                }).
+                on("end", async function () {
+                    try {
+                        csvData.shift(); 
+                        res.send({ Message: "data Saved" ,
+                        data:csvData
+                    })
+                        console.log(file)
+                    }
+                    catch (e) { console.log(e) }
+                });
+            stream.pipe(csvStream);
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    //  console.log(file)
+      //res.send("Upload Success")
+    }
