@@ -135,12 +135,13 @@ module.exports.uploadFile=(req, res) => {
                             phone1: data[8],
                             phone2: data[9],
                             email: data[10],
-                            web: data[11],
-                        });
+                            web: data[11]
+                        }
+                        );
                 }).
                 on("end", async function () {
                     try {
-                        csvData.shift(); 
+                       csvData.shift(); 
                         res.send({ Message: "data Saved" ,
                         data:csvData
                     })
